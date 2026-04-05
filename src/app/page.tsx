@@ -28,7 +28,7 @@ export default function BirthdayPage() {
   };
 
   const navigateToMemories = () => {
-    router.push('/for-you');
+    router.push('/journey-together');
   };
 
   return (
@@ -46,16 +46,16 @@ export default function BirthdayPage() {
           >
             {/* Hero Section - The only thing on index after Intro */}
             <Hero onOpen={navigateToMemories} />
-            
+
             {/* Simple decoration for index */}
             <div className="absolute bottom-10 left-10 opacity-20 pointer-events-none">
-               <motion.div 
-                 animate={{ y: [0, -10, 0] }}
-                 transition={{ duration: 2, repeat: Infinity }}
-                 className="flex items-center gap-4 text-pink-500 font-handwritten text-2xl font-bold"
-               >
-                  Another Year of Us ❤️
-               </motion.div>
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="flex items-center gap-4 text-pink-500 font-handwritten text-2xl font-bold"
+              >
+                Another Year of Us ❤️
+              </motion.div>
             </div>
           </motion.div>
         )}
