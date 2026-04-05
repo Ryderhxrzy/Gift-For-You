@@ -1,26 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Patrick+Hand&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fdfcf7; /* Creamy paper color */
+  --foreground: #1e1e1e;
+  --accent-pink: #ff69b4;
+  --accent-red: #ff2d55;
+  --paper-texture: url('https://www.transparenttextures.com/patterns/natural-paper.png');
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-pink-primary: var(--accent-pink);
+  
+  --font-handwritten: "Kalam", "Patrick Hand", cursive;
+  --font-standard: "Patrick Hand", "Kalam", cursive;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-standard);
+  background-image: var(--paper-texture);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrapbook wobbly border helper - More consistent */
+.wobbly-border {
+  border-radius: 12px 14px 11px 13px / 13px 12px 14px 11px;
+}
+
+.text-pink-accent {
+  color: var(--accent-pink);
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
+}
+
+/* Custom scrollbar for handwriting look */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-left: 2px dashed #cbd5e1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 5px;
+  border: 2px solid var(--background);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Paper unfolding animation placeholder styles */
+@keyframes unfold {
+ from { transform: rotateX(-90deg); opacity: 0; }
+ to { transform: rotateX(0); opacity: 1; }
 }
