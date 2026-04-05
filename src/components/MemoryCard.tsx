@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Calendar } from 'lucide-react';
+import { Heart, Calendar, Sparkles, Star } from 'lucide-react';
 import { Memory } from '../data/memories';
 import { Bouquet } from './Bouquet';
 import { clsx, type ClassValue } from 'clsx';
@@ -18,16 +18,22 @@ interface MemoryCardProps {
   index: number;
 }
 
-export const Tape = ({ className, rotate = 0, size = "large" }: { className?: string; rotate?: number, size?: "small" | "large" }) => (
-  <div 
-    className={cn(
-      "bg-yellow-200/80 backdrop-blur-[2px] border-l-2 border-r-2 border-dashed border-yellow-500/40 z-20",
-      size === "large" ? "h-10 w-28" : "h-6 w-16",
-      className
-    )}
-    style={{ transform: `rotate(${rotate}deg)` }}
-  />
-);
+export const Tape = ({ className, rotate = 0, size = "large", index = 0 }: { className?: string; rotate?: number, size?: "small" | "large", index?: number }) => {
+  return (
+    <div 
+      className={cn(
+        "bg-yellow-200/90 backdrop-blur-[2px] border-l-2 border-r-2 border-dashed border-yellow-600/30 z-20 flex items-center justify-center overflow-hidden shadow-sm",
+        size === "large" ? "h-10 w-28" : "h-6 w-16",
+        className
+      )}
+      style={{ transform: `rotate(${rotate}deg)` }}
+    >
+      {/* Universal Polka Dot Pattern (Same as number 2) */}
+      <div className="absolute inset-0 opacity-[0.15] pointer-events-none" 
+           style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
+    </div>
+  );
+};
 
 export const Pin = ({ className }: { className?: string }) => (
   <div className={cn("absolute w-6 h-6 z-40 drop-shadow-md", className)}>
@@ -45,18 +51,20 @@ export const Pin = ({ className }: { className?: string }) => (
 );
 
 export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
-  // Use index-based deterministic values to avoid hydration mismatch from Math.random()
+  // Use index-based deterministic values
   const rotation = React.useMemo(() => {
     const base = index % 2 === 0 ? -2 : 2;
-    const jitter = (index % 5) - 2; // Fixed values based on index
+    const jitter = (index % 5) - 2;
     return base + jitter;
   }, [index]);
 
-  const tapeRotation = React.useMemo(() => {
-    return (index % 7) * 2 - 6; // Fixed values based on index
-  }, [index]);
-
+  const tapeRotation = React.useMemo(() => (index % 6) * 4 - 10, [index]);
+  const tapeOffset = React.useMemo(() => (index % 4) * 4 - 8, [index]);
   const bouquetVariant = React.useMemo(() => (index % 3 + 1) as 1 | 2 | 3, [index]);
+  
+  // Doodle positions
+  const hasStar = index % 2 === 0;
+  const hasSparkle = index % 3 === 0;
 
   return (
     <motion.div
@@ -69,15 +77,44 @@ export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
       className="relative p-6 cursor-pointer group w-full max-w-[320px]"
       style={{ transform: `rotate(${rotation}deg)` }}
     >
-      {/* Top Tape: Centered-aligned with Golden Heart Pin */}
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center">
-        <Tape rotate={tapeRotation} className="relative" />
+      {/* Background Doodles (Scattered) */}
+      {hasStar && (
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                    className="absolute -top-4 -left-2 text-yellow-300 opacity-40">
+           <Star className="w-6 h-6 fill-yellow-200" />
+        </motion.div>
+      )}
+      {hasSparkle && (
+        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute bottom-6 -left-6 text-pink-300 opacity-50">
+           <Sparkles className="w-8 h-8" />
+        </motion.div>
+      )}
+
+      {/* Top Tape: Deterministically 'handplaced' look - Lowered onto the card */}
+      <div 
+        className="absolute top-2 left-1/2 z-30 flex items-center justify-center h-8"
+        style={{ transform: `translateX(calc(-50% + ${tapeOffset}px))` }}
+      >
+        <Tape rotate={tapeRotation} index={index} className="relative shadow-md" />
+        {/* Pin stays with the tape, slightly jiggled too */}
         <Pin className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
       </div>
       
       <div className="bg-white border-[3px] border-slate-900 rounded-none p-3 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all relative overflow-visible flex flex-col h-full">
+        {/* Subtle Card Pattern */}
+        <div 
+          className="absolute inset-0 pointer-events-none opacity-[0.04] z-0"
+          style={{ backgroundImage: `radial-gradient(#000 1.5px, transparent 1.5px)`, backgroundSize: '8px 8px' }}
+        />
+
+        {/* Handwritten Number Sticker - Refined centering */}
+        <div className="absolute -top-5 -right-5 w-12 h-12 bg-slate-900 text-white rounded-full flex items-center justify-center font-handwritten text-xl font-bold rotate-12 border-[3px] border-white shadow-xl z-40 group-hover:rotate-0 transition-transform pt-1">
+           #{String(index + 1).padStart(2, '0')}
+        </div>
+
         {/* Memory Image Card */}
-        <div className="aspect-[4/5] bg-slate-100 rounded-sm border-2 border-slate-900 flex items-center justify-center overflow-hidden mb-4 relative group">
+        <div className="aspect-[4/5] bg-slate-100 rounded-sm border-2 border-slate-900 flex items-center justify-center overflow-hidden mb-4 relative z-10 group">
            {memory.images && memory.images.length > 0 ? (
              <img 
                src={memory.images[0].url} 
@@ -85,8 +122,8 @@ export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
                className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500"
              />
            ) : (
-             <div className="text-slate-500 font-handwritten text-center p-6 text-lg font-bold leading-tight">
-                [ {memory.imagePlaceholder || "Capturing our moment..."} ]
+             <div className="text-slate-500 font-handwritten text-center p-6 text-lg font-bold leading-tight uppercase opacity-50">
+                [ {memory.imagePlaceholder || "Secret moment..."} ]
              </div>
            )}
            
@@ -100,7 +137,7 @@ export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
            </motion.div>
         </div>
         
-        <div className="space-y-2 text-center pb-2 flex-grow">
+        <div className="space-y-2 text-center pb-2 flex-grow relative z-10">
           <h3 className="font-handwritten text-2xl text-slate-900 font-bold tracking-tight">
             {memory.title}
           </h3>
@@ -111,11 +148,11 @@ export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
           <div className="h-0.5 w-8 bg-pink-200 mx-auto rounded-full" />
         </div>
 
-        {/* Bottom Flower Bouquet - Consistent Right position with random variant */}
+        {/* Bottom Flower Bouquet */}
         <div className="absolute -bottom-6 -right-4 z-40 transform rotate-12 pointer-events-none">
            <div className="relative group/flower">
               <Bouquet variant={bouquetVariant} size="small" />
-              <Tape size="small" rotate={-25} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-70 border-none px-2 py-1" />
+              <Tape size="small" rotate={-25} index={index + 1} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-70 border-none px-2 py-1" />
            </div>
         </div>
       </div>
