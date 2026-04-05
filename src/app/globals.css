@@ -29,6 +29,17 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Global cursor pointers for interactive elements */
+button, 
+[role="button"], 
+a, 
+input[type="submit"], 
+input[type="button"], 
+.cursor-pointer,
+.cursor-pointer * {
+  cursor: pointer !important;
+}
+
 /* Scrapbook wobbly border helper - More consistent */
 .wobbly-border {
   border-radius: 12px 14px 11px 13px / 13px 12px 14px 11px;
