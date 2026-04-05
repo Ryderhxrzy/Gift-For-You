@@ -3,35 +3,65 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Memory } from '../data/memories';
-import { X, Heart, Star, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Heart, Star, Sparkles, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { Bouquet } from './Bouquet';
+import { Tape } from './MemoryCard';
 
 interface MemoryModalProps {
   memory: Memory | null;
   onClose: () => void;
+  onNextMemory?: () => void;
+  onPrevMemory?: () => void;
 }
 
-export const MemoryModal = ({ memory, onClose }: MemoryModalProps) => {
+export const MemoryModal = ({ memory, onClose, onNextMemory, onPrevMemory }: MemoryModalProps) => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isDescExpanded, setIsDescExpanded] = React.useState(false);
+  const [isViewerOpen, setIsViewerOpen] = React.useState(false);
 
   // Reset index when memory changes
   React.useEffect(() => {
     setCurrentIndex(0);
+    setIsExpanded(false);
+    setIsDescExpanded(false);
+    setIsViewerOpen(false);
   }, [memory?.id]);
 
   const nextImage = () => {
     if (!memory) return;
-    setCurrentIndex((prev) => (prev + 1) % memory.images.length);
+    setCurrentIndex((prev: number) => (prev + 1) % memory.images.length);
+    setIsDescExpanded(false);
   };
 
   const prevImage = () => {
     if (!memory) return;
-    setCurrentIndex((prev) => (prev - 1 + memory.images.length) % memory.images.length);
+    setCurrentIndex((prev: number) => (prev - 1 + memory.images.length) % memory.images.length);
+    setIsDescExpanded(false);
   };
+
+  const truncateText = (text: string, limit: number) => {
+    if (text.length <= limit) return text;
+    return text.slice(0, limit) + "...";
+  };
+
+  const fullLetter = memory?.letter || "";
+  const displayLetter = isExpanded ? fullLetter : truncateText(fullLetter, 200);
+
+  const currentImg = memory?.images[currentIndex];
+  const fullDesc = currentImg?.description || "";
+  const displayDesc = isDescExpanded ? fullDesc : truncateText(fullDesc, 100);
 
   return (
     <AnimatePresence>
       {memory && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md p-4 sm:p-8">
+        <motion.div 
+          key={memory.id}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md"
+        >
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -56,27 +86,59 @@ export const MemoryModal = ({ memory, onClose }: MemoryModalProps) => {
                   </div>
                </div>
                
-               <button 
-                 onClick={onClose}
-                 className="p-2 rounded-full hover:bg-pink-50 transition-colors border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:shadow-none active:translate-x-0.5 active:translate-y-0.5 bg-white shrink-0"
-               >
-                 <X className="w-6 h-6" />
-               </button>
+               <div className="flex items-center gap-3 shrink-0">
+                  {/* Global Memory Navigation */}
+                  <div className="hidden sm:flex items-center gap-1 mr-4">
+                     <button 
+                       onClick={onPrevMemory}
+                       className="p-1.5 rounded-full hover:bg-slate-100 border border-slate-200"
+                       title="Previous Destination"
+                     >
+                       <ChevronLeft className="w-5 h-5" />
+                     </button>
+                     <button 
+                       onClick={onNextMemory}
+                       className="p-1.5 rounded-full hover:bg-slate-100 border border-slate-200"
+                       title="Next Destination"
+                     >
+                       <ChevronRight className="w-5 h-5" />
+                     </button>
+                  </div>
+
+                  <button 
+                    onClick={onClose}
+                    className="p-2 rounded-full hover:bg-pink-50 transition-colors border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:shadow-none active:translate-x-0.5 active:translate-y-0.5 bg-white shrink-0"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+               </div>
             </div>
 
             {/* Scrollable Content */}
             <div className="relative flex-1 overflow-y-auto custom-scrollbar p-8 pt-6 px-10">
-              <div className="font-handwritten text-2xl text-slate-800 leading-relaxed space-y-6">
-                {memory.letter.split('\n').map((paragraph, i) => (
-                   <motion.p 
-                     key={i}
-                     initial={{ opacity: 0, x: -10 }}
-                     animate={{ opacity: 1, x: 0 }}
-                     transition={{ delay: 0.1 * i }}
+              <div className="font-handwritten text-2xl text-slate-800 leading-relaxed">
+                <AnimatePresence mode="wait">
+                  <motion.div 
+                    key={isExpanded ? 'expanded' : 'collapsed'}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-6"
+                  >
+                    {displayLetter.split('\n').map((paragraph, i) => (
+                       <p key={i}>{paragraph}</p>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+                
+                {fullLetter.length > 200 && (
+                   <button 
+                     onClick={() => setIsExpanded(!isExpanded)}
+                     className="mt-4 text-pink-500 font-bold hover:underline underline-offset-4 decoration-wavy flex items-center gap-1"
                    >
-                     {paragraph}
-                   </motion.p>
-                ))}
+                     {isExpanded ? "See Less" : "See More..."}
+                     {isExpanded ? <Star className="w-4 h-4 fill-pink-100" /> : <Heart className="w-4 h-4 fill-pink-100" />}
+                   </button>
+                )}
               </div>
 
               {/* Memory Image Carousel at the bottom - Two at a time */}
@@ -89,7 +151,6 @@ export const MemoryModal = ({ memory, onClose }: MemoryModalProps) => {
                     <div className="grid grid-cols-2 gap-6 relative">
                       {[0, 1].map((offset) => {
                          const idx = (currentIndex + offset) % memory.images.length;
-                         // If we only have 1 image, don't show the second one if it's the same as the first unless there are more than 1 image
                          if (offset === 1 && memory.images.length === 1) return null;
                          
                          return (
@@ -97,18 +158,29 @@ export const MemoryModal = ({ memory, onClose }: MemoryModalProps) => {
                               key={`${currentIndex}-${offset}`}
                               initial={{ opacity: 0, scale: 0.9, rotate: offset === 0 ? -2 : 2 }}
                               animate={{ opacity: 1, scale: 1, rotate: offset === 0 ? -1 : 1 }}
-                              className="bg-white p-3 pb-10 border-2 border-slate-900 shadow-xl"
+                              onClick={() => {
+                                 setCurrentIndex(idx);
+                                 setIsViewerOpen(true);
+                              }}
+                              className="bg-white p-3 pb-10 border-2 border-slate-900 shadow-xl cursor-pointer relative group/img overflow-hidden"
                             >
                                <div className="aspect-square bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden mb-3">
                                   <img 
                                     src={memory.images[idx].url} 
                                     alt={memory.images[idx].title} 
-                                    className="w-full h-full object-cover" 
+                                    className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-500" 
                                   />
                                </div>
                                
+                               {/* View Full Overlay */}
+                               <div className="absolute inset-0 bg-pink-500/0 group-hover/img:bg-pink-500/20 flex items-center justify-center transition-all">
+                                  <span className="bg-white border-2 border-slate-900 px-3 py-1 rounded-full font-handwritten text-xs opacity-0 group-hover/img:opacity-100 translate-y-4 group-hover/img:translate-y-0 transition-all shadow-md">
+                                     View Full
+                                  </span>
+                               </div>
+
                                <div className="text-center">
-                                  <h4 className="font-handwritten text-lg text-slate-900 font-bold leading-tight">
+                                  <h4 className="font-handwritten text-lg text-slate-900 font-bold leading-tight line-clamp-1">
                                      {memory.images[idx].title}
                                   </h4>
                                   <div className="flex items-center justify-center gap-1.5 text-slate-400 font-handwritten text-[10px] mt-1">
@@ -125,14 +197,14 @@ export const MemoryModal = ({ memory, onClose }: MemoryModalProps) => {
                     {memory.images.length > 2 && (
                       <>
                         <button 
-                          onClick={prevImage}
-                          className="absolute left-[-30px] top-1/2 -translate-y-1/2 p-2 bg-white border-2 border-slate-900 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-slate-50 transition-colors z-20"
+                          onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                          className="absolute left-[-30px] top-1/2 -translate-y-1/2 p-2 bg-white border-2 border-slate-900 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-slate-50 transition-colors z-20 cursor-pointer"
                         >
                            <ChevronLeft className="w-6 h-6" />
                         </button>
                         <button 
-                          onClick={nextImage}
-                          className="absolute right-[-30px] top-1/2 -translate-y-1/2 p-2 bg-white border-2 border-slate-900 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-slate-50 transition-colors z-20"
+                          onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                          className="absolute right-[-30px] top-1/2 -translate-y-1/2 p-2 bg-white border-2 border-slate-900 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-slate-50 transition-colors z-20 cursor-pointer"
                         >
                            <ChevronRight className="w-6 h-6" />
                         </button>
@@ -151,13 +223,117 @@ export const MemoryModal = ({ memory, onClose }: MemoryModalProps) => {
               </motion.div>
             </div>
 
+            {/* Decorative Bouquets in Modal Corners */}
+            <div className="absolute -top-6 -left-6 z-40 rotate-[-15deg] pointer-events-none">
+                <Bouquet variant={1} size="large" />
+                <Tape size="small" rotate={20} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-70 border-none" />
+            </div>
+
+            <div className="absolute -bottom-6 -right-6 z-40 rotate-[15deg] pointer-events-none">
+                <Bouquet variant={2} size="large" />
+                <Tape size="small" rotate={-20} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-70 border-none" />
+            </div>
+
             {/* Decorative Stars in background */}
             <div className="absolute bottom-4 left-4 text-yellow-400 opacity-20 pointer-events-none">
                <Star className="w-12 h-12 fill-yellow-200" />
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       )}
+
+      {/* FULL VIEW OVERLAY (LIGHTBOX) */}
+      <AnimatePresence>
+        {isViewerOpen && memory && (
+          <motion.div 
+            key="lightbox-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-slate-900/90 backdrop-blur-xl flex flex-col items-center justify-center p-4 sm:p-12 overflow-y-auto"
+            onClick={() => setIsViewerOpen(false)}
+          >
+             <button 
+               onClick={() => setIsViewerOpen(false)}
+               className="absolute top-4 right-4 sm:top-8 sm:right-8 p-3 bg-white border-2 border-slate-900 rounded-full shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] cursor-pointer hover:bg-pink-50 transition-colors z-[210]"
+             >
+                <X className="w-6 h-6 sm:w-8 sm:h-8" />
+             </button>
+
+             <div 
+               className="relative max-w-2xl w-full"
+               onClick={(e) => e.stopPropagation()}
+             >
+                <motion.div 
+                  key={currentIndex}
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="bg-white p-4 pb-8 sm:pb-12 border-[3px] border-slate-900 shadow-2xl relative my-auto"
+                >
+                   {/* Paper Texture */}
+                   <div className="absolute inset-0 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] opacity-30 mix-blend-multiply" />
+
+                   <div className="aspect-square bg-slate-100 border-2 border-slate-900 flex items-center justify-center overflow-hidden mb-6 relative group">
+                      <img 
+                        src={memory.images[currentIndex].url} 
+                        alt={memory.images[currentIndex].title} 
+                        className="w-full h-full object-contain" 
+                      />
+                   </div>
+                   
+                   <div className="text-center font-handwritten px-4 relative z-10 pb-6">
+                      <h2 className="text-3xl sm:text-4xl text-slate-900 font-bold mb-1">
+                         {memory.images[currentIndex].title}
+                      </h2>
+                      <div className="flex items-center justify-center gap-3 text-slate-400 text-lg font-bold mb-3">
+                         <Calendar className="w-5 h-5 text-pink-400 font-bold" />
+                         {memory.date}
+                      </div>
+                      
+                      {memory.images[currentIndex].description && (
+                        <div className="max-w-md mx-auto">
+                          <p className="text-slate-600 text-lg leading-relaxed italic">
+                             {displayDesc}
+                          </p>
+                          {fullDesc.length > 100 && (
+                            <button 
+                              onClick={() => setIsDescExpanded(!isDescExpanded)}
+                              className="text-pink-500 font-bold text-sm underline underline-offset-2 decoration-wavy cursor-pointer mt-1"
+                            >
+                              {isDescExpanded ? "See Less" : "See More..."}
+                            </button>
+                          )}
+                        </div>
+                      )}
+                   </div>
+
+                   {/* Sticky Note Decoration inside Lightbox - Adjusted position to avoid overflow */}
+                   <div className="absolute -bottom-2 -right-2 sm:bottom-4 sm:right-4 bg-yellow-100 border-2 border-slate-900 p-2 sm:p-3 rotate-6 shadow-md font-handwritten text-xs sm:text-sm font-bold text-slate-600 z-20">
+                      Memories Forever ❤️
+                   </div>
+                </motion.div>
+
+                {/* Navigation in Lightbox */}
+                {memory.images.length > 1 && (
+                  <>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                      className="absolute left-[-20px] sm:left-[-80px] top-1/2 -translate-y-1/2 p-3 sm:p-4 bg-white border-2 border-slate-900 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] cursor-pointer hover:bg-pink-50 transition-all active:translate-x-1 active:translate-y-1 active:shadow-none"
+                    >
+                       <ChevronLeft className="w-8 h-8 sm:w-10 sm:h-10" />
+                    </button>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                      className="absolute right-[-20px] sm:right-[-80px] top-1/2 -translate-y-1/2 p-3 sm:p-4 bg-white border-2 border-slate-900 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] cursor-pointer hover:bg-pink-50 transition-all active:translate-x-1 active:translate-y-1 active:shadow-none"
+                    >
+                       <ChevronRight className="w-10 h-10" />
+                    </button>
+                  </>
+                )}
+             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </AnimatePresence>
   );
 };
