@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Calendar } from 'lucide-react';
 import { Memory } from '../data/memories';
+import { Bouquet } from './Bouquet';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,10 +18,11 @@ interface MemoryCardProps {
   index: number;
 }
 
-export const Tape = ({ className, rotate = 0 }: { className?: string; rotate?: number }) => (
+export const Tape = ({ className, rotate = 0, size = "large" }: { className?: string; rotate?: number, size?: "small" | "large" }) => (
   <div 
     className={cn(
-      "absolute h-10 w-28 bg-yellow-200/80 backdrop-blur-[2px] border-l-2 border-r-2 border-dashed border-yellow-500/40 z-20",
+      "bg-yellow-200/80 backdrop-blur-[2px] border-l-2 border-r-2 border-dashed border-yellow-500/40 z-20",
+      size === "large" ? "h-10 w-28" : "h-6 w-16",
       className
     )}
     style={{ transform: `rotate(${rotate}deg)` }}
@@ -28,15 +30,33 @@ export const Tape = ({ className, rotate = 0 }: { className?: string; rotate?: n
 );
 
 export const Pin = ({ className }: { className?: string }) => (
-  <div className={cn("absolute w-5 h-5 rounded-full bg-red-600 shadow-lg border-2 border-red-800 z-20", className)}>
-    <div className="absolute top-1.5 left-1.5 w-1.5 h-1.5 bg-white/60 rounded-full" />
+  <div className={cn("absolute w-6 h-6 z-40 drop-shadow-md", className)}>
+    {/* Rose Gold Metallic Heart Pin/Thumbtack */}
+    <div className="absolute inset-0 bg-gradient-to-br from-[#ffd700] via-[#ffd700] to-[#b8860b] rounded-full border border-[#8b4513]/20 shadow-[inset_-2px_-2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center p-1.5 overflow-hidden">
+       <Heart className="w-full h-full text-white/90 fill-white" />
+       {/* Shine Gradient overlay */}
+       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent rotate-45 translate-x-[-50%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+    </div>
+    {/* Specular highlight */}
+    <div className="absolute top-1 left-1.5 w-1.5 h-1.5 bg-white/70 rounded-full blur-[0.3px]" />
+    {/* Sublte Shadow */}
+    <div className="absolute -bottom-1 -right-0.5 w-4 h-4 bg-black/10 rounded-full blur-[2px] -z-10" />
   </div>
 );
 
 export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
-  // Balanced rotation for scrapbook effect
-  const rotation = React.useMemo(() => (index % 2 === 0 ? -3 : 3) + (Math.random() - 0.5) * 2, [index]);
-  const tapeRotation = React.useMemo(() => (Math.random() - 0.5) * 15, []);
+  // Use index-based deterministic values to avoid hydration mismatch from Math.random()
+  const rotation = React.useMemo(() => {
+    const base = index % 2 === 0 ? -2 : 2;
+    const jitter = (index % 5) - 2; // Fixed values based on index
+    return base + jitter;
+  }, [index]);
+
+  const tapeRotation = React.useMemo(() => {
+    return (index % 7) * 2 - 6; // Fixed values based on index
+  }, [index]);
+
+  const bouquetVariant = React.useMemo(() => (index % 3 + 1) as 1 | 2 | 3, [index]);
 
   return (
     <motion.div
@@ -49,14 +69,13 @@ export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
       className="relative p-6 cursor-pointer group w-full max-w-[320px]"
       style={{ transform: `rotate(${rotation}deg)` }}
     >
-      {/* Tape decoration: random corners */}
-      {index % 2 === 0 ? (
-        <Tape className="-top-2 left-1/2 -translate-x-1/2" rotate={tapeRotation} />
-      ) : (
-        <Tape className="-top-3 left-10" rotate={-15 + tapeRotation} />
-      )}
+      {/* Top Tape: Centered-aligned with Golden Heart Pin */}
+      <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center">
+        <Tape rotate={tapeRotation} className="relative" />
+        <Pin className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+      </div>
       
-      <div className="bg-white border-[3px] border-slate-900 rounded-[12px_12px_12px_12px] p-3 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
+      <div className="bg-white border-[3px] border-slate-900 rounded-none p-3 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all relative overflow-visible flex flex-col h-full">
         {/* Memory Image Card */}
         <div className="aspect-[4/5] bg-slate-100 rounded-sm border-2 border-slate-900 flex items-center justify-center overflow-hidden mb-4 relative group">
            {memory.images && memory.images.length > 0 ? (
@@ -81,7 +100,7 @@ export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
            </motion.div>
         </div>
         
-        <div className="space-y-2 text-center pb-2">
+        <div className="space-y-2 text-center pb-2 flex-grow">
           <h3 className="font-handwritten text-2xl text-slate-900 font-bold tracking-tight">
             {memory.title}
           </h3>
@@ -90,6 +109,14 @@ export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
              {memory.date}
           </div>
           <div className="h-0.5 w-8 bg-pink-200 mx-auto rounded-full" />
+        </div>
+
+        {/* Bottom Flower Bouquet - Consistent Right position with random variant */}
+        <div className="absolute -bottom-6 -right-4 z-40 transform rotate-12 pointer-events-none">
+           <div className="relative group/flower">
+              <Bouquet variant={bouquetVariant} size="small" />
+              <Tape size="small" rotate={-25} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-70 border-none px-2 py-1" />
+           </div>
         </div>
       </div>
     </motion.div>
