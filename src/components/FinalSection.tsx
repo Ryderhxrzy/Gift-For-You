@@ -86,7 +86,7 @@ export const FinalSection = ({ onReplay }: { onReplay: () => void }) => {
 
                   <div className="font-handwritten text-2xl md:text-3xl text-slate-700 leading-relaxed max-w-3xl mx-auto space-y-6">
                      <p>
-                        Happy happy 24th birthday sayo, mahal! Pasensya na kung ito lang yung nakayanan ko ha, gusto ko lang na kahit simple ay maparamdam ko sayo kung gaano ka kahalaga sa akin.
+                        Happy happy 25th birthday sayo, mahal! Pasensya na kung ito lang yung nakayanan ko ha, gusto ko lang na kahit simple ay maparamdam ko sayo kung gaano ka kahalaga sa akin.
                         Pangako na babawi ako pag nag sama na tayo mahal.
                      </p>
                      <p>
