@@ -67,7 +67,7 @@ export const Hero = ({ onOpen }: { onOpen: () => void }) => {
           transition={{ duration: 4, repeat: Infinity }}
         >
           <h1 className="font-handwritten text-5xl md:text-8xl text-slate-900 mb-6 drop-shadow-[5px_5px_0px_#fed7e2] leading-tight px-4">
-            Happy 24th Birthday, <br />
+            Happy 25th Birthday, <br />
             <span className="text-pink-500 block mt-2 underline decoration-wavy decoration-pink-300 underline-offset-8">Ma. Leli / Mahal ❤️</span>
           </h1>
         </motion.div>
