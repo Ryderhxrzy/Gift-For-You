@@ -97,18 +97,6 @@ export const Hero = ({ onOpen }: { onOpen: () => void }) => {
           </p>
         </div>
       </motion.div>
-
-      {/* Scroll indicator with doodles */}
-      <motion.div
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2"
-      >
-        <div className="font-handwritten text-xl text-slate-500 font-bold">
-          Keep scrolling for a surprise...
-          <div className="w-1 h-8 bg-pink-400 mx-auto mt-2 rounded-full" />
-        </div>
-      </motion.div>
     </section>
   );
 };
