@@ -18,12 +18,12 @@ interface MemoryCardProps {
   index: number;
 }
 
-export const Tape = ({ className, rotate = 0, size = "large", index = 0 }: { className?: string; rotate?: number, size?: "small" | "large", index?: number }) => {
+export const Tape = ({ className, rotate = 0, size = "large" }: { className?: string; rotate?: number, size?: "small" | "medium" | "large" }) => {
   return (
     <div 
       className={cn(
         "bg-yellow-200/90 backdrop-blur-[2px] border-l-2 border-r-2 border-dashed border-yellow-600/30 z-20 flex items-center justify-center overflow-hidden shadow-sm",
-        size === "large" ? "h-10 w-28" : "h-6 w-16",
+        size === "large" ? "h-10 w-28" : size === "medium" ? "h-8 w-24" : "h-6 w-16",
         className
       )}
       style={{ transform: `rotate(${rotate}deg)` }}
@@ -96,7 +96,7 @@ export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
         className="absolute top-2 left-1/2 z-30 flex items-center justify-center h-8"
         style={{ transform: `translateX(calc(-50% + ${tapeOffset}px))` }}
       >
-        <Tape rotate={tapeRotation} index={index} className="relative shadow-md" />
+        <Tape rotate={tapeRotation} size="large" className="relative shadow-md" />
         {/* Pin stays with the tape, slightly jiggled too */}
         <Pin className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
       </div>
@@ -152,7 +152,10 @@ export const MemoryCard = ({ memory, onClick, index }: MemoryCardProps) => {
         <div className="absolute -bottom-6 -right-4 z-40 transform rotate-12 pointer-events-none">
            <div className="relative group/flower">
               <Bouquet variant={bouquetVariant} size="small" />
-              <Tape size="small" rotate={-25} index={index + 1} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-70 border-none px-2 py-1" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                  <Tape size="small" rotate={-25} className="opacity-70 border-none px-2 py-1" />
+                  <Pin className="absolute scale-75" />
+              </div>
            </div>
         </div>
       </div>
