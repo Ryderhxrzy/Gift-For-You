@@ -57,22 +57,99 @@ export const memories: Memory[] = [
     ]
   },
   {
-    id: "the-little-things",
-    title: "The Little Things",
-    date: "March 05, 2024",
-    letter: "It's the way you hold my hand, how you remember the coffee I like, and the way you smile when you're thinking. These little things make my life so much brighter.",
-    imagePlaceholder: "Sweet Moments",
+    id: "qc-memorial-circle-1",
+    title: "QC Memorial Circle",
+    date: "August 21, 2025",
+    letter: "Ito yung pangalawang balik natin sa Circle mahal pero ngayon ay friends with benifits na tayo nito HAHAHA naalala ko bago tayo pumunta dito sa circle, magkayakap lang tayo pag uwi dahil sa sobrang pagod HAHAHA na miss ko yon haaa. Magkaholding hands rin tayo nito noong pauwi na tayo after natin mag simba sa Quiapo. Kabado ako non nung hinawakan ko kamay mo HAHHA akala ko hindi ka papayag e, iiyak talaga ako HAHHA emee. Nakakamiss kamay mo huhu. Ang daming masasayang ala-ala dito sa circle mahal, naalala ko yung kumakain tayo ng kwek kwek tapos nag kkwentuhan tapos nag scroll tayo non sa IG HAHAH ang LT ng mga napapanood natin, grabe ang tawaanan HAHAHHA. Kinabukasan nito mahal umamin na akoo sayo hehe August 22, 2025. Finally nasabi ko na rin sayo HAHA. I love you mahal. Mahal na mahal kita <3",
+    imagePlaceholder: "QC Memorial Circle",
     images: [
-      { url: "https://images.unsplash.com/photo-1534531173927-aeb928d54385", title: "Holding Hands" },
-      { url: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94", title: "Peaceful Times" }
+      {
+        url: "/qc-august-21/qc-aug-21-1.jpg",
+        title: "Ice cream with you <3",
+        description: "Ang cute ng ice cream ko no HAHAHA sorry naa. Paubos na agad HAHAHA."
+      },
+      {
+        url: "/qc-august-21/qc-aug-21-2.jpg",
+        title: "Tower",
+        description: "Ang ganda ng pagkared nya huhu perfect na perfect."
+      },
+      {
+        url: "/qc-august-21/qc-aug-21-3.jpg",
+        title: "Kwek-kwek with you <3",
+        description: "Ang sarap nito mahal pero mas masarap kapa rin."
+      },
+      {
+        url: "/qc-august-21/qc-aug-21-4.jpg",
+        title: "HUHU T_T",
+        description: "Ito ang pinakamaganda grabe huhu ang galing ng ilaw ilaw grabe T_T cute cute."
+      }
     ]
   },
   {
-    id: "our-future",
-    title: "Our Future",
-    date: "Always & Forever",
-    letter: "I can't wait to see all the many more birthdays we get to celebrate together. 24 is just the beginning of another amazing chapter of your life, and I'm so lucky to be in it.",
-    imagePlaceholder: "To Always",
-    images: [{ url: "https://images.unsplash.com/photo-1513273395968-997e73d3997f", title: "Our Dream" }]
-  }
+    id: "antipolo-church",
+    title: "Antipolo Church",
+    date: "August 23, 2025",
+    letter: "Pangatlong araw natin 'to mahal kila kuya, ito rin yung pang apat naitng gala HAHA. Nag Antipolo tayo nito kahit na hindi natin alam kung saan ang sakayan HAHAHA ang daming nangyari dito grabe HAHAH papunta pa lang tayo, sinubok na agad tayo ng tadhana HAHAHA hirap hanapin ng sakayan na yon grabee pero buti at nag tanong tanong tayo at halos ilang oras din yung ginugol natin para mahanap yon HAHAHA pero worth in naman nung narating natin. Sakto tayo mahal at nakapag misa pa tayo, sobrang ganda ng Antipolo huhu. Ang linis ng lugar nila mahal tapos super ganda pa ng simbahan. Ang ayaw ko lang ay yung soya nilang walang lasa, grabe scamm HAHAHAH. Na enjoy ko yung pag punta natin dito mahal, sobrang ganda huhu dito tayo pakasal ha pag wala tayo nakitang mas maganda pa hehe. After natin mag simba nag Jollibee tayoo at ikaw nag order HAHAHA thankkk u mahaal hehe late na tayo nito at sinubok uli tayo ng panahon pag uwi HAHAHHA ang hirap makasakay na scam pa tayo ng sinakyan natin palabas ng simbahan, grabe HAHAHHA. Buti na lang at may nadaan na bus at nakauwi rin HAHAH. Sana makabalik ulit tayo dito mahal, simba ulit tayo at kain sa Jollibee hehe. I love you!!",
+    imagePlaceholder: "Antipolo Church",
+    images: [
+      {
+        url: "/antipolo-august-23/antipolo-aug-23-1.jpg",
+        title: "Antipolo Church Outside",
+        description: "Ang ganda ng view dito mahal huhu."
+      },
+      {
+        url: "/antipolo-august-23/antipolo-aug-23-2.jpg",
+        title: "Antipolo Church Inside",
+        description: "Mas maganda ang view sa loob huhu."
+      },
+      {
+        url: "/antipolo-august-23/antipolo-aug-23-3.jpg",
+        title: "Tower",
+        description: "Ang cute."
+      },
+      {
+        url: "/antipolo-august-23/antipolo-aug-23-4.jpg",
+        title: "Antipolo City Hall",
+        description: "Ang ganda ng city hall dito mahal. Sana all."
+      }
+    ]
+  },
+  {
+    id: "valenzuela-park",
+    title: "Valenzuela Park",
+    date: "August 24, 2025",
+    letter: "Pang-apat na araw natin to kila kuya, ito rin yung pang-limang gala natin hehe pero hindi ako sure kung Valenzuela ba ang nauna sa Antipolo ha HAHAHAH nakalimutan ko naaa. Ang gandaaa dito sa valenzuela mahal kahit na saglit lang tayo nakatambay huhu dumiretso tayo nung Grotto hehe nag ambon ambon pa pag-uwi. Pero sulit yung tambay natin dito mahal, ang ganda ng paligid, napakalinis huhu gusto ko tong balikan kasama ka ulitt. I love youu",
+    imagePlaceholder: "Valenzuela Park",
+    images: [
+      {
+        url: "/valenzuela-august-24/valenzuela-aug-23-1.jpg",
+        title: "Ice cream with you <3",
+        description: "Ayan perfect na ang ice cream ko dito HAHHAHA."
+      },
+      {
+        url: "/valenzuela-august-24/valenzuela-aug-23-2.jpg",
+        title: "Valenzuela Park",
+        description: "Ang ganda ganda park huhu."
+      }
+    ]
+  },
+  {
+    id: "grotto-church",
+    title: "Grotto Church",
+    date: "August 24, 2025",
+    letter: "Dito naman tayo dumiretso after natin mag Valenzuela mahal. Nakakamiss huhu. Ito na rin yung huling araw ng gala natin kasi aalis kana :(. Sobrang nag enjoy ako sa pag punta natin dito mahal, ang ganda ng simbahan huhu kaso nung pag punta natin ay may construction pa huhu. Balik tayo dito ha, sigurado pag balik natin dito napakaganda naa. I love you!.",
+    imagePlaceholder: "Grotto Church",
+    images: [
+      {
+        url: "/grotto-church-august-24/grotto-church-aug-24-1.jpg",
+        title: "Grotto Church",
+        description: "Ang ganda ganda ng view."
+      },
+      {
+        url: "/grotto-church-august-24/grotto-church-aug-24-2.jpg",
+        title: "Grotto Church",
+        description: "Ang ganda ganda ng view."
+      }
+    ]
+  },
 ];
